@@ -32,6 +32,12 @@ jobs:
           test "$(uname -m)" = arm64
       - name: Build and verify local bundle
         run: ./scripts/build.sh
+      - name: Installer transactions and Git updates
+        run: python3 scripts/install-checks.py
+      - name: Compile native installer lifecycle helper
+        run: |
+          mkdir -p tmp
+          xcrun swiftc -swift-version 5 -O -module-cache-path .build/module-cache scripts/install-lifecycle.swift -o tmp/install-lifecycle-check
       - name: Functional and native regression checks
         run: ./scripts/check.sh
       - name: Extended scheduler checks

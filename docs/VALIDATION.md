@@ -12,6 +12,14 @@ The scheduler/runtime harnesses use synthetic samples and disposable SQLite. The
 
 CI builds on ARM64 `macos-15` with Swift 6+, packages the app, verifies its local signature, and runs functional/native/scheduler/runtime checks. It logs the toolchain/OS. CI is generic software coverage on a hosted machine, not M4 sensor validation or a claim that all macOS 14+ releases were tested.
 
+## Installer verification
+
+The single-command installer passes 12 fast checks covering first/repeated installation, spaced paths, source ZIPs, Git fast-forward/self-refresh, dirty/diverged/unreachable upstream protection, one retained previous app, concurrent locks, refusal to overwrite unrelated files/symlinks, build/signature/copy/quit/replacement failures and launch-error reporting. Real Git and filesystem operations are used with compiler/signature/lifecycle command doubles. Fixture preferences, SQLite history and sidecar bytes remain identical in every case.
+
+A thirteenth local check uses actual signing, app copying and the AppKit lifecycle helper with a unique disposable app identity: first launch, normal quit with a shutdown-flush marker, replacement, exact-path relaunch and previous-bundle retention pass. It never targets the user's Mac Buddy identifier or real data. CI runs the fast checks and compiles the real helper. Installation/login/Gatekeeper acceptance on another user's physical Mac remains separate.
+
+The installer itself never edits preferences/history or notification/login registration. The app's normal shutdown can flush the current minute and append a lifecycle event; preserving history does not mean suppressing normal recording.
+
 ## Isolated native UI evidence
 
 Actual-view synthetic renders and an isolated running app exercised the Forest/Manrope/Pebble strip/panel, dashboard and Settings, live metrics, process sorting, history/report controls, snooze/resume, avatar minimize/click/drag, left/right docking, drag undocking and edge expansion. Test data/preferences were separate; the user's settings/history were verified preserved. Earlier native checks cover transparency, Reduce Motion, keyboard navigation and placement persistence. These are bounded checks, not long performance certification.

@@ -15,6 +15,17 @@ Use an Apple-silicon Mac and Swift 6+ with a macOS 14+ SDK. Follow the [README](
 
 `check.sh` runs the executable `MacBuddyChecks`, native CPU-timebase/gap checks and a brief-memory-peak recorder regression. `scheduler-check.sh` compiles the actual sampling service into an isolated harness and checks five groups. Runtime checks exercise the packaged executable with synthetic samples and a temporary database. `swift test` is not the entry point because the dependency-free runner supports Command Line Tools installations without XCTest.
 
+Installer checks use disposable app bundles, preferences, SQLite/sidecar sentinels and local Git remotes:
+
+```sh
+python3 scripts/install-checks.py
+python3 scripts/install-checks.py --native
+```
+
+The fast checks double compiler/signature/lifecycle commands while exercising real Git and filesystem operations, including replacement rollback and preservation of user-data sentinels. `--native` additionally compiles, installs, opens, normally quits and updates a real AppKit fixture with a unique test bundle identifier on a logged-in desktop. It never targets `app.macbuddy.personal`. CI runs the fast checks and compiles the actual lifecycle helper; the native interactive acceptance is separate.
+
+Use `./scripts/install.sh --no-update` when intentionally testing local uncommitted source; add `--no-open` or a temporary `--destination` as needed. Production defaults pull the configured Git upstream, refuse dirty/diverged checkouts, install for the current user and launch. The installer never edits user preferences/history or login/notification registration. Normal app shutdown can flush the current minute and record its lifecycle event.
+
 CI uses the same checks on an ARM64 macOS 15 runner. Timers are real-time integration checks. They are not a substitute for physical sensors, accessibility, fullscreen, display reconnection or gestures.
 
 ## Optional diagnostics

@@ -2,7 +2,7 @@
 
 ## Available now: public source
 
-Clone or download this repository and build on your own Mac. The build script creates an ARM64, ad-hoc signed application with bundled licenses. It requires no paid Apple Developer membership. MIT applies to the project; third-party notices and Manrope's OFL still apply.
+Clone or download this repository and run `./scripts/install.sh` to build on your own Mac, install to `~/Applications/Mac Buddy.app` and launch. On Git clones the same command first fetches a fast-forward update from the branch’s configured upstream; source ZIPs need a new download for updates. The installer leaves settings/history and OS permission/login choices alone and retains one previous app bundle. The build script creates an ARM64, ad-hoc signed application with bundled licenses. It requires no paid Apple Developer membership. MIT applies to the project; third-party notices and Manrope's OFL still apply.
 
 The initial beta is M4-focused with physical validation on one M4 Air. Other chips/OS combinations need explicit validation. Green CI verifies builds and isolated behavior, not physical sensors or an end-user installation.
 

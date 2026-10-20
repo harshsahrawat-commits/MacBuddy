@@ -1,6 +1,6 @@
 # Privacy and data
 
-The app performs no network requests and includes no account system, analytics, advertising SDK, remote AI service or automatic update checker. Building/cloning and GitHub itself use the network separately from the app.
+The app performs no network requests and includes no account system, analytics, advertising SDK, remote AI service or automatic update checker. Building/cloning, the user-invoked installer’s Git update, and GitHub itself use the network separately from the app. `scripts/install.sh` writes app/build/lock/backup files only; it never reads or changes personal preferences, history or exported reports. It asks Mac Buddy to quit normally before replacing the bundle, allowing the app to flush its pending history. It does not change notification permission or login registration.
 
 ## What the app reads
 

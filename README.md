@@ -53,21 +53,57 @@ If the tools are not installed, run this once and finish Apple's installer:
 xcode-select --install
 ```
 
-Then check your toolchain and build:
+### Install or update with one command
+
+For the first installation, clone the repository and run the installer:
 
 ```sh
-swift --version
-git clone https://github.com/harshsahrawat-commits/MacBuddy.git
-cd MacBuddy
+git clone https://github.com/harshsahrawat-commits/MacBuddy.git && cd MacBuddy && ./scripts/install.sh
+```
+
+For future updates, open Terminal in that same cloned `MacBuddy` folder and run:
+
+```sh
+./scripts/install.sh
+```
+
+The command pulls the current branch's configured Git upstream with `--ff-only`, builds locally, verifies the app signature, asks running copies to quit normally so history can flush, installs to **`~/Applications/Mac Buddy.app`**, and launches that exact copy. No `sudo` is needed. Keep the cloned source folder for future updates.
+
+The installer leaves your preferences, history/SQLite sidecars, exported reports, notification permission and login registration alone. It builds before closing the running app. Build failures leave the installed app running; a replacement failure restores the previous app bundle. One previous bundle is kept at `~/Applications/.MacBuddy-previous.app`. If macOS refuses the final launch, the new app remains installed and the command prints its path for manual opening; it does not disable Gatekeeper or reverse database changes.
+
+Git updates stop if the source folder has local changes, is detached, cannot reach its upstream, or needs a non-fast-forward merge. No files are discarded or automatically stashed. Contributor/offline builds can use `--no-update` explicitly.
+
+If you cloned before the installer was added, get it once with:
+
+```sh
+git pull --ff-only && ./scripts/install.sh
+```
+
+Other options:
+
+```sh
+./scripts/install.sh --no-update              # Build the source already on disk
+./scripts/install.sh --no-open                # Install without opening the new app
+./scripts/install.sh --destination /path/to/Applications
+./scripts/install.sh --help
+```
+
+**Source ZIP:** choose **Code → Download ZIP**, extract it, open Terminal in the extracted folder and run `./scripts/install.sh`. Without Git metadata it builds that downloaded source and explains that future updates need a fresh ZIP. Use a Git clone for the one-command fetch/build/install update flow. The installer is user-invoked; there is no background updater.
+
+The app lives in the **menu bar**, with no regular Dock icon. The first launch opens the dashboard. On a display without a built-in notch, use the menu-bar menu → **Center on this screen** to place the floating display.
+
+The installed copy has a stable path for launch at login. If you previously enabled login startup from a different app location, turn it off there before migrating and enable it again from the installed copy. The installer does not change that OS registration automatically. Avoid launching old `dist`/Applications copies alongside the installed app because they share settings/history.
+
+### Build without installing
+
+For development or a manual local build:
+
+```sh
 ./scripts/build.sh
 open "dist/Mac Buddy.app"
 ```
 
-Alternatively choose **Code → Download ZIP**, extract it, open Terminal in the extracted folder and run the last two commands. The build creates an ARM64 bundle signed locally with an ad-hoc signature. It does not install or launch it automatically.
-
-The app lives in the **menu bar**, with no regular Dock icon. The first launch opens the dashboard. On a display without a built-in notch, use the menu-bar menu → **Center on this screen** to place the floating display.
-
-You may copy `dist/Mac Buddy.app` to `~/Applications` for a stable location; quit the previous copy first and launch the copy you intend to keep. Enable launch at login only after choosing that location. Avoid running multiple copies, which share the same settings and history.
+This creates an ARM64 app locally and signs it with an ad-hoc signature. The build-only command does not install or launch it automatically.
 
 This local build is not a signed distribution package. Sharing the built `.app` with someone else is not equivalent to them building it locally; downloaded copies can be blocked by Gatekeeper. Do not disable Gatekeeper. A Developer ID signed, notarized download is a [later milestone](docs/DISTRIBUTION.md).
 
@@ -107,7 +143,7 @@ Mac Buddy has no analytics, accounts, network requests or remote storage. It rea
 
 The archive has a **100 MiB budget including sidecars**. If maintenance cannot create headroom, recording pauses with an explanation; it does not silently erase old history. Retry or explicitly clear history in Settings.
 
-To uninstall, turn off launch at login in Mac Buddy, quit it, and remove your app copy. Data stays available for a future install. To erase it too, clear history in Settings before quitting, then remove `~/Library/Application Support/MacBuddy`; optionally run `defaults delete app.macbuddy.personal` to remove preferences. Delete any exported PDFs separately. Removing data is irreversible—back it up first if you want to keep it.
+To uninstall, turn off launch at login in Mac Buddy, quit it, and remove your app copy. For script installations, remove `~/Applications/Mac Buddy.app` and the optional hidden `~/Applications/.MacBuddy-previous.app` backup. Data stays available for a future install. To erase it too, clear history in Settings before quitting, then remove `~/Library/Application Support/MacBuddy`; optionally run `defaults delete app.macbuddy.personal` to remove preferences. Delete any exported PDFs separately. Removing data is irreversible—back it up first if you want to keep it.
 
 ## Development and project status
 
