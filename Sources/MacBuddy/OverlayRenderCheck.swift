@@ -2,6 +2,13 @@ import AppKit
 import SwiftUI
 import MacBuddyCore
 
+// An offscreen export needs a real backing scale. Otherwise SwiftUI text can
+// arrive as a one-pixel-per-point layer inside a larger bitmap and look blurred.
+private final class RenderCheckWindow: NSWindow {
+    static let pixelScale: CGFloat = 3
+    override var backingScaleFactor: CGFloat { Self.pixelScale }
+}
+
 // Offscreen render: does not start monitoring, request permissions, or change preferences.
 @MainActor func renderOverlayCheck(to url: URL, expanded: Bool = true, reduceTransparency: Bool = false, scene: String = "normal") throws {
     _ = NSApplication.shared
@@ -56,10 +63,22 @@ import MacBuddyCore
         content = AnyView(OverlayView(model: model, forceOpaque: reduceTransparency, initialTab: scene == "processes" ? "Processes" : "Overview"))
         size = model.expanded ? OverlayGeometry.expandedSize : OverlayGeometry.size(for: model.floatingLayout)
     }
-    let view = NSHostingView(rootView: content.environment(\.controlActiveState, .inactive))
+    let scale = RenderCheckWindow.pixelScale
+    let view = NSHostingView(rootView: content.environment(\.displayScale, scale).environment(\.controlActiveState, .inactive))
+    let window = RenderCheckWindow(contentRect: NSRect(origin: .zero, size: size), styleMask: [.borderless], backing: .buffered, defer: false)
+    window.isReleasedWhenClosed = false
+    window.contentView = view
+    defer { window.contentView = nil; window.close() }
     view.frame = NSRect(origin: .zero, size: size)
     view.layoutSubtreeIfNeeded()
-    guard let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { throw HistoryError.database("Could not allocate overlay render") }
+    window.displayIfNeeded()
+    // Let pending SwiftUI text/layout work settle without showing a window.
+    RunLoop.main.run(until: Date().addingTimeInterval(0.2))
+    view.layoutSubtreeIfNeeded()
+    window.displayIfNeeded()
+    guard let bitmap = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(size.width * scale), pixelsHigh: Int(size.height * scale), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0) else { throw HistoryError.database("Could not allocate overlay render") }
+    bitmap.bitmapData?.initialize(repeating: 0, count: bitmap.bytesPerRow * bitmap.pixelsHigh)
+    bitmap.size = size
     view.cacheDisplay(in: view.bounds, to: bitmap)
     guard let data = bitmap.representation(using: .png, properties: [:]) else { throw HistoryError.database("Could not encode overlay PNG") }
     try data.write(to: url, options: .atomic)

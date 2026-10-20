@@ -40,6 +40,14 @@ mkdir -p tmp/renders
 "dist/Mac Buddy.app/Contents/MacOS/MacBuddy" --report-fixture tmp/renders/report.pdf
 ```
 
+Regenerate the README images after rebuilding:
+
+```sh
+python3 scripts/render-readme.py
+```
+
+The helper uses synthetic readings in offscreen windows with an explicit 3× backing scale, validates output dimensions and strips EXIF/text metadata. Pass `--app "/path/to/Mac Buddy.app"` to select another built bundle. Keep explicit logical `width`/`height` attributes in README image tags so browsers display the high-resolution pixels without enlarging the UI. The PNG filenames include `@3x` to identify the export scale.
+
 Available render scenes: normal, cpu, memory, recovering, recovered, unavailable, processes, avatar, vertical, dashboard, settings. A render is a layout fixture, not a live UI test.
 
 `--diagnose` reads real system metrics and prints observable process names/PIDs. Review and redact its output before sharing. `python3 scripts/audit-history.py` reads the local archive, including WAL, without changing application records. It can also take an explicit database path.

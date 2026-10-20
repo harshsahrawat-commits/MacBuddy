@@ -6,18 +6,18 @@ A quiet, local-only companion for your Mac. Native CPU, GPU and RAM monitoring, 
 
 **M4-focused source beta.** Validated on one M4 MacBook Air. This repository contains source code, not a notarized app download. Build it on your own Mac using the instructions below. Broader hardware and OS validation is still needed.
 
-![Mac Buddy floating strip with Pebble and CPU, GPU and RAM readings](docs/images/strip.png)
+<a href="docs/images/strip@3x.png"><img src="docs/images/strip@3x.png" width="480" height="68" alt="Mac Buddy floating strip with Pebble and CPU, GPU and RAM readings"></a>
 
 <details>
 <summary>Expanded panel and dashboard</summary>
 
-![Mac Buddy expanded panel](docs/images/expanded-panel.png)
+<a href="docs/images/expanded-panel@3x.png"><img src="docs/images/expanded-panel@3x.png" width="480" height="560" alt="Mac Buddy expanded panel"></a>
 
-![Mac Buddy dashboard](docs/images/dashboard.png)
+<a href="docs/images/dashboard@3x.png"><img src="docs/images/dashboard@3x.png" width="960" height="790" alt="Mac Buddy dashboard"></a>
 
 </details>
 
-*Actual native view rendered with synthetic readings; not a live hardware benchmark.*
+*Native views rendered at 3× resolution with synthetic readings, displayed at their logical size. Click an image for full resolution. These are not live hardware benchmarks.*
 
 ## What it does
 

@@ -24,7 +24,7 @@ The installer itself never edits preferences/history or notification/login regis
 
 Actual-view synthetic renders and an isolated running app exercised the Forest/Manrope/Pebble strip/panel, dashboard and Settings, live metrics, process sorting, history/report controls, snooze/resume, avatar minimize/click/drag, left/right docking, drag undocking and edge expansion. Test data/preferences were separate; the user's settings/history were verified preserved. Earlier native checks cover transparency, Reduce Motion, keyboard navigation and placement persistence. These are bounded checks, not long performance certification.
 
-The images in `docs/images` are native offscreen renders with synthetic data; no personal process list or history is included. They show layout, not a separate simulated frontend.
+The images in `docs/images` are native offscreen renders with synthetic data; no personal process list or history is included. They use a 3× backing scale and PNG pixel dimensions, with logical display sizes specified in the README to avoid enlargement. `scripts/render-readme.py` validates dimensions and omits EXIF/text metadata. Strip/panel/dashboard exports are visually inspected for text, avatar, controls and complete chart/scroll content. They show layout, not a separate simulated frontend.
 
 ## User-confirmed behavior
 
