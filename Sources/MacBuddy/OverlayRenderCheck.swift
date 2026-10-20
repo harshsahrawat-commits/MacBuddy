@@ -32,9 +32,17 @@ import MacBuddyCore
     }
     if scene == "processes" {
         var tracker = ProcessTracker()
-        let before = (0..<4).map { ProcessCounter(pid: Int32($0+10), birth: 1, name: ["Xcode","Safari","WindowServer","Terminal"][$0], cpuNanoseconds: 0, footprint: UInt64(100+$0*100)*1_048_576) }
+        let names = ["Xcode", "Safari", "WindowServer", "Terminal"]
+        let before: [ProcessCounter] = names.enumerated().map { index, name in
+            let pid = Int32(index + 10)
+            let footprint = UInt64(100 + index * 100) * UInt64(1_048_576)
+            return ProcessCounter(pid: pid, birth: 1, name: name, cpuNanoseconds: 0, footprint: footprint)
+        }
         _ = tracker.update(before, time: 0)
-        let after = before.enumerated().map { index, p in ProcessCounter(pid: p.pid, birth: p.birth, name: p.name, cpuNanoseconds: UInt64(4-index)*100_000_000, footprint: p.footprint) }
+        let after: [ProcessCounter] = before.enumerated().map { index, process in
+            let cpuNanoseconds = UInt64(4 - index) * UInt64(100_000_000)
+            return ProcessCounter(pid: process.pid, birth: process.birth, name: process.name, cpuNanoseconds: cpuNanoseconds, footprint: process.footprint)
+        }
         model.processes = tracker.update(after, time: 1)
     }
     model.expanded = expanded
