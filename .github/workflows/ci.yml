@@ -1,0 +1,40 @@
+name: macOS checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: macos-checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: ARM64 build and isolated checks
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Record environment
+        run: |
+          uname -m
+          sw_vers
+          swift --version
+          xcode-select -p
+          test "$(uname -m)" = arm64
+      - name: Build and verify local bundle
+        run: ./scripts/build.sh
+      - name: Functional and native regression checks
+        run: ./scripts/check.sh
+      - name: Extended scheduler checks
+        run: ./scripts/scheduler-check.sh
+      - name: Packaged runtime integration
+        run: '"dist/Mac Buddy.app/Contents/MacOS/MacBuddy" --runtime-checks'

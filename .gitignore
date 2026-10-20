@@ -1,0 +1,44 @@
+# Publish only these root entries. Session notes, prototypes and private
+# validation captures remain local even if someone runs `git add .`.
+/*
+!/.gitignore
+!/Package.swift
+!/README.md
+!/LICENSE
+!/THIRD_PARTY_NOTICES.md
+!/CONTRIBUTING.md
+!/SECURITY.md
+!/Sources/
+!/Tests/
+!/Resources/
+!/scripts/
+!/docs/
+!/.github/
+
+# Generated output and private data, anywhere in an allowed directory.
+.DS_Store
+.build/
+.swiftpm/
+__pycache__/
+*.pyc
+*.app/
+*.dmg
+*.zip
+*.sqlite*
+*.db
+*.db-*
+*.memgraph
+*.trace/
+*.log
+.env
+.env.*
+*.pem
+*.p12
+*.p8
+*.key
+*.mobileprovision
+*.provisionprofile
+
+# Historical instrumented builder depends on earlier source layouts.
+# Retained locally with the original investigation; not a public tool.
+/scripts/build-profile.py

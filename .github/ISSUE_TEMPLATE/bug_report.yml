@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a reproducible problem or unavailable reading.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is an M4-focused source beta. Check docs/KNOWN_ISSUES.md first.
+        Do not upload personal databases, preferences, raw diagnostics or memory dumps.
+  - type: input
+    id: model
+    attributes:
+      label: Mac model and chip
+      placeholder: MacBook Air, Apple M4, 16 GB RAM
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version and build
+      description: Find this under About This Mac; do not include a serial number.
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Mac Buddy revision and Swift version
+      description: Use git rev-parse --short HEAD and swift --version; for a source ZIP, give its download date/branch.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps, expected result and actual result
+      description: Include display setup, floating mode and whether the issue survives a normal relaunch. Back up data before any destructive step.
+    validations:
+      required: true
+  - type: textarea
+    id: readings
+    attributes:
+      label: Unavailable readings or error text
+      description: CPU/GPU/temperatures/memory/pressure/battery/storage; include displayed source/error wording when relevant. Redact process names and personal paths from diagnostics.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Relevant evidence
+      description: Sanitized screenshots or small log excerpts only. For resource reports distinguish sampling window, lifetime peaks and profiling overhead.
